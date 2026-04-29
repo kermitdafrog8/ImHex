@@ -1056,7 +1056,7 @@
     "hex.builtin.view.pattern_editor.menu.file.load_pattern": "Load Pattern...",
     "hex.builtin.view.pattern_editor.menu.file.open_pattern": "Open Pattern...",
     "hex.builtin.view.pattern_editor.menu.file.save_pattern": "Save Pattern",
-    "hex.builtin.view.pattern_editor.menu.file.save_pattern_as": "Save Pattern AS...",
+    "hex.builtin.view.pattern_editor.menu.file.save_pattern_as": "Save Pattern As...",
     "hex.builtin.view.pattern_editor.menu.find": "Find...",
     "hex.builtin.view.pattern_editor.menu.find_next": "Find Next",
     "hex.builtin.view.pattern_editor.menu.find_previous": "Find Previous",
