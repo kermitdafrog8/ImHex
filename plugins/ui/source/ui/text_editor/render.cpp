@@ -107,12 +107,14 @@ namespace hex::ui {
             if (line.empty())
                 return false;
 
-            for (auto keys : m_codeFoldKeys) {
-                if (keys.m_start.m_line == lineIndex && m_codeFoldDelimiters.contains(keys)) {
-                      auto delimiter = m_codeFoldDelimiters[keys].first;
-                      if (!delimiter || (delimiter != '(' && delimiter != '[' && delimiter != '{' && delimiter != '<'))
-                            return false;
-                      return !line.contains(delimiter);
+            for (auto key : m_codeFoldKeys) {
+                if (key.m_start.m_line == lineIndex && m_codeFoldDelimiters.contains(key)) {
+                    auto delimiter = m_codeFoldDelimiters[key].first;
+                    if (!delimiter || (delimiter != '(' && delimiter != '[' && delimiter != '{' && delimiter != '<'))
+                        return false;
+                    if (key.m_start.m_column >= m_unfoldedLines[lineIndex].m_lineMaxColumn)
+                        return true;
+                    return !line.contains(delimiter);
                 }
             }
             return !line.ends_with('{');
@@ -1009,8 +1011,7 @@ namespace hex::ui {
         if (delimiters.size() < 2)
             return key;
 
-        auto lineIndex = key.m_start.m_line;
-        Coordinates openDelimiterCoordinates = m_lines->find(delimiters.substr(0,1), Coordinates(lineIndex, 0));
+        Coordinates openDelimiterCoordinates = m_lines->find(delimiters.substr(0,1), key.m_start);
         Coordinates closeDelimiterCoordinates;
         Line openDelimiterLine = m_lines->m_unfoldedLines[openDelimiterCoordinates.m_line];
         i32 columnIndex = 0;
@@ -1709,13 +1710,13 @@ namespace hex::ui {
         auto line = operator[](aFrom.m_line);
         i32 colIndex = lineCoordsIndex(aFrom);
         auto substr1 = line.m_chars.substr(0, colIndex);
-        auto substr2 =line.m_chars.substr(colIndex, line.m_chars.size() - colIndex);
+        auto substr2 = line.m_chars.substr(colIndex, line.m_chars.size() - colIndex);
         if (substr2.size() < substr1.size()) {
-            auto distanceToEnd = line.stringTextSize(substr2.c_str());
+            auto distanceToEnd = line.stringTextSize(substr2);
             line.m_lineMaxColumn = line.lineTextSize();
             return line.m_lineMaxColumn - distanceToEnd;
         }
-        return line.stringTextSize(substr1.c_str());
+        return line.stringTextSize(substr1);
     }
 
     void TextEditor::drawCodeFolds(float lineIndex, ImDrawList *drawList) {
